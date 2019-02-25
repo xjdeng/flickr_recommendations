@@ -1,5 +1,6 @@
 import flickr_api
-from flickr_api.api import flickr
+from flickr_api.flickrerrors import FlickrServerError
+import time
 
 def _set_keys(keyfile = "default.key"):
     f = open(keyfile, 'r')
@@ -14,12 +15,16 @@ def _set_auth(authfile = "default.auth"):
 
 def _exhaustive(myfunction):
     results = myfunction(per_page = 500)
-    new = results
-    i = 1
-    while len(new) != 0:
-        i += 1
-        new = myfunction(per_page = 500, page = i)
-        results += new
+    pages = results.info.pages
+    for i in range(2, pages+1):
+        goahead = False
+        while goahead == False:
+            try:
+                additional = myfunction(per_page = 500, page = i)
+            except FlickrServerError:
+                print("Flickr Server Error!")
+                time.sleep(5)
+        results += additional
     return results
 
 def favorites(user = None):
@@ -34,4 +39,4 @@ def start(keyfile = "default.key", authfile = "default.auth"):
     _set_keys(keyfile)
     _set_auth(authfile)
     flickr_api.enable_cache()
-    return flickr_api,flickr
+    return flickr_api
