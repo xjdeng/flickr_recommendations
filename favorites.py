@@ -1,5 +1,4 @@
 import flickr_api
-from flickr_api.flickrerrors import FlickrServerError
 import time
 
 def _set_keys(keyfile = "default.key"):
@@ -14,15 +13,23 @@ def _set_auth(authfile = "default.auth"):
     return flickr_api
 
 def _exhaustive(myfunction):
-    results = myfunction(per_page = 500)
+    goahead = False
+    while goahead == False:
+        try:
+            results = myfunction(per_page = 500)
+            goahead = True
+        except Exception:
+            print("Server Error!")
+            time.sleep(5)       
     pages = results.info.pages
     for i in range(2, pages+1):
         goahead = False
         while goahead == False:
             try:
                 additional = myfunction(per_page = 500, page = i)
-            except FlickrServerError:
-                print("Flickr Server Error!")
+                goahead = True
+            except Exception:
+                print("Server Error!")
                 time.sleep(5)
         results += additional
     return results
