@@ -1,5 +1,17 @@
 from Easy_Image.detect import EasyImageURL, EasyImageList, NotAnImage
 
+from Easy_Image import gui
+import random
+import copy
+
+def slideshow(favs, rand = True):
+    if rand == True:
+        favs = copy.copy(favs)
+        random.shuffle(favs)
+    fl = FlickrImageList(favs)
+    gui.slideshow_browser(fl)
+    
+
 class FlickrImage(EasyImageURL):
     
     def __init__(self, flickrobj, dimension = "Large"):
