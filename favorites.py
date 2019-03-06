@@ -47,3 +47,21 @@ def start(keyfile = "default.key", authfile = "default.auth"):
     _set_auth(authfile)
     flickr_api.enable_cache()
     return flickr_api
+
+def create_gallery(title, description):
+    return flickr_api.Gallery.create(title=title, description=description)
+
+def add_from_favs(favs, iterator, gallery):
+    for i in iterator:
+        goahead = False
+        while goahead == False:
+            try:
+                gallery.addPhoto(photo_id = favs[i].id)
+                goahead = True
+            except Exception as e:
+                if str(e) == "5 : Failed to add photo":
+                    goahead = True
+                    print("5 : Failed to add photo")
+                else:
+                    print("Server Error!")
+                    time.sleep(5)
