@@ -823,11 +823,12 @@ class Person(FlickrObject):
             info = r["galleries"]
             galleries = _check_list(info.pop("gallery"))
             galleries_ = []
-
             for g in galleries:
                 g["owner"] = Person(id=g["owner"])
                 galleries_.append(g)
-            return FlickrList(galleries_, Info(**info))
+            #return FlickrList(galleries_, Info(**info))
+            tmp = [Gallery(id = i['id']) for i in galleries_]
+            return FlickrList(tmp, Info(**info))
         return args, format_result
 
     @caller("flickr.people.getLimits")
