@@ -28,8 +28,8 @@ def _exhaustive(myfunction):
             try:
                 additional = myfunction(per_page = 500, page = i)
                 goahead = True
-            except Exception:
-                print("Server Error!")
+            except Exception as e:
+                print("Server Error!: {}".format(e))
                 time.sleep(5)
         results += additional
     return results
@@ -63,5 +63,5 @@ def add_from_favs(favs, iterator, gallery):
                     goahead = True
                     print("5 : Failed to add photo")
                 else:
-                    print("Server Error!")
+                    print("Server Error!: {}".format(e))
                     time.sleep(5)
