@@ -2,7 +2,7 @@ from Easy_Image.detect import EasyImageURL, EasyImageList, NotAnImage
 
 from Easy_Image import gui
 import random
-import copy
+import copy, time
 
 def slideshow(favs, rand = True):
     if rand == True:
@@ -22,9 +22,17 @@ class FlickrImage(EasyImageURL):
         self.url = None
     
     def getimg(self):
-        if self._img is None:
-            self.url = self.flickrobj.getSizes()[self.dimension]['source']
-        self._img = super(FlickrImage, self).getimg()
+        goahead = False
+        while goahead == False:
+            try:
+                if self._img is None:
+                    self.url = self.flickrobj.getSizes()[self.dimension]['source']
+                self._img = super(FlickrImage, self).getimg()
+                goahead = True
+            except KeyError:
+                self.dimension = 'Original'
+            except Exception:
+                time.sleep(1)
         return self._img
     
 class FlickrImageList(EasyImageList):   
