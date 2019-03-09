@@ -1,8 +1,21 @@
 from Easy_Image.detect import EasyImageURL, EasyImageList, NotAnImage
+from flickr_api import Photo
 
 from Easy_Image import gui
 import random
 import copy, time
+
+def load_list(filename):
+    """
+Loads a Flickr Image List from file
+    """
+    f = open(filename, 'r')
+    ids = f.read().split("\n")
+    fil = FlickrImageList()
+    for i in ids:
+        fi = FlickrImage(Photo(id = i))
+        fil.append(fi)
+    return fil
 
 def slideshow(favs, rand = True):
     if rand == True:
@@ -56,4 +69,12 @@ class FlickrImageList(EasyImageList):
                 super(FlickrImageList, self).append(tmp)
             except NotAnImage:
                 pass
-
+    
+    def save(self, filename):
+        """
+Save a Flickr Image List to file
+        """
+        ids = [f.flickrobj.id for f in self]
+        f = open(filename,'w')
+        f.write("\n".join(ids))
+        f.close()
