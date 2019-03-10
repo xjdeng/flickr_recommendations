@@ -1,14 +1,19 @@
 import flickr_api
 import time
+from path import Path as path
 
-def _set_keys(keyfile = "default.key"):
+def _set_keys(keyfile = None):
+    if keyfile is None:
+        keyfile = str(path(__file__).abspath().dirname()) + "default.key"
     f = open(keyfile, 'r')
     lines = f.read().split("\n")
     flickr_api.set_keys(api_key = lines[0], api_secret = lines[1])
     f.close()
     return flickr_api
     
-def _set_auth(authfile = "default.auth"):
+def _set_auth(authfile = None):
+    if authfile is None:
+        authfile = str(path(__file__).abspath().dirname()) + "default.auth"
     flickr_api.set_auth_handler(authfile)
     return flickr_api
 
