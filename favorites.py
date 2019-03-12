@@ -4,7 +4,7 @@ from path import Path as path
 
 def _set_keys(keyfile = None):
     if keyfile is None:
-        keyfile = str(path(__file__).abspath().dirname()) + "default.key"
+        keyfile = str(path(__file__).abspath().dirname()) + "/default.key"
     f = open(keyfile, 'r')
     lines = f.read().split("\n")
     flickr_api.set_keys(api_key = lines[0], api_secret = lines[1])
@@ -13,7 +13,7 @@ def _set_keys(keyfile = None):
     
 def _set_auth(authfile = None):
     if authfile is None:
-        authfile = str(path(__file__).abspath().dirname()) + "default.auth"
+        authfile = str(path(__file__).abspath().dirname()) + "/default.auth"
     flickr_api.set_auth_handler(authfile)
     return flickr_api
 
@@ -47,7 +47,7 @@ def favorites(user = None):
 def myself():
     return flickr_api.test.login()
     
-def start(keyfile = "default.key", authfile = "default.auth"):
+def start(keyfile = None, authfile = None):
     _set_keys(keyfile)
     _set_auth(authfile)
     flickr_api.enable_cache()
