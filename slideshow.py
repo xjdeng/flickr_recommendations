@@ -1,9 +1,17 @@
 from Easy_Image.detect import EasyImageURL, EasyImageList, NotAnImage
-from flickr_api import Photo
-
+try:
+    import favorites
+except ImportError:
+    from . import favorites
 from Easy_Image import gui
 import random
 import copy, time
+
+import logging
+
+logging.basicConfig(level=logging.DEBUG, format=' %(asctime)s - %(levelname)s - %(message)s')
+
+favorites.start()
 
 def load_list(filename):
     """
@@ -13,7 +21,7 @@ Loads a Flickr Image List from file
     ids = f.read().split("\n")
     fil = FlickrImageList()
     for i in ids:
-        fi = FlickrImage(Photo(id = i))
+        fi = FlickrImage(favorites.flickr_api.Photo(id = i))
         fil.append(fi)
     return fil
 
@@ -35,6 +43,7 @@ class FlickrImage(EasyImageURL):
         self.url = None
     
     def getimg(self):
+        self.flickrobj.getSizes()
         goahead = False
         while goahead == False:
             try:
@@ -44,7 +53,8 @@ class FlickrImage(EasyImageURL):
                 goahead = True
             except KeyError:
                 self.dimension = 'Original'
-            except Exception:
+            except Exception as e:
+                print(e)
                 time.sleep(1)
         return self._img
     
