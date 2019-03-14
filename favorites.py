@@ -1,4 +1,7 @@
-import flickr_api
+try:
+    import flickr_api
+except ImportError:
+    from . import flickr_api
 import time
 from path import Path as path
 
