@@ -43,7 +43,6 @@ class FlickrImage(EasyImageURL):
         self.url = None
     
     def getimg(self):
-        self.flickrobj.getSizes()
         goahead = False
         while goahead == False:
             try:
