@@ -6,12 +6,16 @@ except ImportError:
 from Easy_Image import gui
 import random
 import copy, time
+import cv2
+from sklearn.externals import joblib
 
 import logging
 
 logging.basicConfig(level=logging.DEBUG, format=' %(asctime)s - %(levelname)s - %(message)s')
 
 favorites.start()
+
+FlickrApiError = favorites.flickr_api.flickrerrors.FlickrAPIError
 
 def load_list(filename):
     """
@@ -41,6 +45,7 @@ class FlickrImage(EasyImageURL):
         self.path = None
         self._img = None
         self.url = None
+        self.error_time = 1
     
     def getimg(self):
         goahead = False
@@ -49,9 +54,18 @@ class FlickrImage(EasyImageURL):
                 if self._img is None:
                     self.url = self.flickrobj.getSizes()[self.dimension]['source']
                 self._img = super(FlickrImage, self).getimg()
+                self.error_time = 1
                 goahead = True
             except KeyError:
-                self.dimension = 'Original'
+                sizes = self.flickrobj.getSizes()
+                self.dimension = list(sizes.keys())[-1]
+            except cv2.error as e:
+                print("CV2 error, waiting {} seconds... \n {}".format(self.error_time, e))
+                print(self.url)
+                time.sleep(self.error_time)
+            except FlickrApiError as e:
+                if str(e) == '1 : Photo not found':
+                    raise(e)
             except Exception as e:
                 print(e)
                 time.sleep(1)
