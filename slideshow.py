@@ -49,6 +49,7 @@ class FlickrImage(EasyImageURL):
     
     def getimg(self):
         goahead = False
+        self.error_time = 1
         while goahead == False:
             try:
                 if self._img is None:
@@ -62,6 +63,9 @@ class FlickrImage(EasyImageURL):
             except cv2.error as e:
                 print("CV2 error, waiting {} seconds... \n {}".format(self.error_time, e))
                 print(self.url)
+                self.error_time *= 2
+                if self.error_time >= 256:
+                    raise(e)
                 time.sleep(self.error_time)
             except FlickrApiError as e:
                 if str(e) == '1 : Photo not found':
