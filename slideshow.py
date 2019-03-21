@@ -74,6 +74,37 @@ class FlickrImage(EasyImageURL):
                 print(e)
                 time.sleep(1)
         return self._img
+
+    def geturls(self):
+        """
+Maybe can refactor
+        """
+        goahead = False
+        self.error_time = 1
+        while goahead == False:
+            try:
+                if self.url is None:
+                    self.url = self.flickrobj.getSizes()[self.dimension]['source']
+                    imgurl = self.flickrobj.getInfo()['urls']['url'][0]['text']
+                self.error_time = 1
+                goahead = True
+            except KeyError:
+                sizes = self.flickrobj.getSizes()
+                self.dimension = list(sizes.keys())[-1]
+            except cv2.error as e:
+                print("CV2 error, waiting {} seconds... \n {}".format(self.error_time, e))
+                print(self.url)
+                self.error_time *= 2
+                if self.error_time >= 256:
+                    raise(e)
+                time.sleep(self.error_time)
+            except FlickrApiError as e:
+                if str(e) == '1 : Photo not found':
+                    raise(e)
+            except Exception as e:
+                print(e)
+                time.sleep(1)
+        return (self.url, imgurl)
     
 class FlickrImageList(EasyImageList):   
     def __init__(self, x = []):
