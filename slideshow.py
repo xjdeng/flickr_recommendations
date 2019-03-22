@@ -81,9 +81,10 @@ Maybe can refactor
         """
         goahead = False
         self.error_time = 1
+        imgurl = None
         while goahead == False:
             try:
-                if self.url is None:
+                if (self.url is None) or (imgurl is None):
                     self.url = self.flickrobj.getSizes()[self.dimension]['source']
                     imgurl = self.flickrobj.getInfo()['urls']['url'][0]['text']
                 self.error_time = 1
